@@ -1,8 +1,14 @@
 import streamlit as st
 
-def render_hospital_data(accident):
+st.set_page_config(page_title="Emergency Hospital Dispatch", layout="centered")
 
-    st.subheader(" Emergency Hospital Dispatch")
+st.title("🚨 Accident Detection System")
+
+# Toggle to simulate accident
+accident = st.toggle("Accident Detected")
+
+def render_hospital_data(accident):
+    st.subheader("🏥 Emergency Hospital Dispatch")
 
     if not accident:
         st.info("Hospitals on standby.")
@@ -18,6 +24,9 @@ def render_hospital_data(accident):
 
     for h in hospitals:
         if h == nearest:
-            st.success(f" Ambulance dispatched: {h['name']} ({h['distance']} km)")
+            st.success(f"🚑 Ambulance dispatched: {h['name']} ({h['distance']} km)")
         else:
             st.write(f"{h['name']} - {h['distance']} km")
+
+# 🔥 THIS CALL WAS MISSING
+render_hospital_data(accident)
