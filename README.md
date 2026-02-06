@@ -1,90 +1,56 @@
- G-Trace:
+ G-Trace: Smart Accident Detection and Rescue System
 
-G-Trace is a prototype smart accident detection and rescue system that simulates how accidents can be detected, locations shared, hospitals notified, and traffic cleared for ambulance movement.
+G-Trace is an automated IoT-based emergency response platform. It uses a modular software design to detect vehicle accidents in real-time, locate the incident with GPS, and coordinate an immediate rescue response between hospitals and law enforcement. 
 
-PROBLEM STATEMENT:
+Project Overview
 
-Road accidents can cause delays in emergency response due to slow detection, unawareness of hospital availability, and traffic congestion. Existing solutions rarely simulate the complete pipeline from detection to rescue.
+The main goal of G-Trace is to remove human delays in reporting road accidents. By automating detection and dispatch, the system ensures that medical help reaches the victim during the critical "Golden Hour."
 
-OUR IDEA:
+The Three-Stage Logical Flow
 
-G-Trace simulates the full emergency response system:
+Detection (The Sensor Layer): The system continuously monitors vehicle dynamics using a simulated tri-axial accelerometer.
 
-* Detect accidents using accelerometer impact simulation  
-* Show GPS location of the accident on a dashboard  
-* Notify the nearest hospital and simulate ambulance dispatch  
-* Display emergency alerts and clear traffic signals  
+Coordination (The Dispatch Layer): When an accident is detected, the system triggers a localized emergency state, locks GPS coordinates, and notifies authorities.
 
-This helps learners and evaluators understand how IoT and automation can improve emergency response time.
+Rescue (The Action Layer): The system identifies the nearest hospital based on real-time distance calculations and dispatches an ambulance.
 
-MINI PROTOTYPE:
+Key Technical Modules
 
-For this prototype, the system focuses on:
+The project uses a modular design, allowing each part of the rescue chain to work independently.
 
-* Simulated accident detection using a slider (impact intensity)  
-* GPS location display for a single accident scenario  
-* Display of three nearby hospitals with automatic selection of the nearest  
-* Emergency alert panel showing accident, ambulance dispatch, and traffic control  
-* Minimal dashboard UI using Streamlit  
+Accident Detection Logic (ui_alerts.py): Monitors "Impact Intensity," which reflects resultant G-force . An accident is classified at values $>6.0$.
 
-The goal is to demonstrate the concept of automated accident detection and emergency response.
+GIS and Localization (ui_map_placeholder.py): Instantly retrieves and pins GPS coordinates, specifically for Gandhipuram, Coimbatore.
 
+Smart Resource Allocation (ui_hospitals.py): Calculates distances to hospitals like CMCH (2.3 km) and PSG (3.1 km) for automated dispatch.
 
-TECH STACK:
+Command and Control (ui_sidebar.py and ui_layout.py): Manages the Emergency Response Center interface and notifications for multiple agencies.
 
-* Python  
-* Streamlit  
-* Pandas  
+How to Run the App
 
-PROJECT STURTURE:
+To run the G-Trace dashboard on your local machine, follow these steps:
 
-```
-gtrace-project/
-├── app.py              # Main application integrating all modules
-├── member1.py          # Controls & accident detection
-├── member2.py          # Dashboard header
-├── member3.py          # GPS tracking map
-├── member4.py          # Hospital dispatch system
-├── member5.py          # Alerts & traffic simulation
-```
-HOW TO RUN THE APP:
-
-1. Create a virtual environment:
-
-   ```bash
-   python -m venv venv
+1. Ensure Python is Installed: Make sure you have Python 3.7 or higher on your system.
+2. Install Required Libraries: Open your terminal or VS Code terminal and install the necessary dependencies:
    ```
-
-2. ACTIVATE THE ENVIRONMENT:
-
-   ```bash
-   .\venv\Scripts\Activate
-   ```
-
-3. INSTALL DEPENDENCIES:
-
-   ```bash
    pip install streamlit pandas
+   ```
+3. Download the Project Files: Make sure all modular files (ui_layout.py, ui_sidebar.py, ui_alerts.py, ui_map_placeholder.py, ui_hospitals.py) are in the same directory as your main execution script.
+4. Execute the Application: Run the following command in your terminal:
+   ```
+   streamlit run your_main_script_name.py
+   ```
+   Replace your_main_script_name.py with the name of your file that contains the import streamlit and module integration code.
 
-4. RUN THE APP:
+Mini Hack 1 Evaluation Scope (25%)
 
-   ```bash
-   streamlit run app.py
+For this milestone, we successfully demonstrated:
 
- TEAM CONTRIBUTION:
+- Complete Logic Loop: Transition from "Normal Driving" to "Accident Detected" based on physical sensor thresholds.
+- Localization: Working GIS mapping of the accident site in Coimbatore.
+- Service Integration: Functional dispatching logic for hospitals and police alerts.
 
-Each team member worked on a separate module:
+Future Enhancements
 
-* member1.py – Controls and accident detection logic  
-* member2.py – Dashboard header and system status  
-* member3.py – GPS location map  
-* member4.py – Hospital dispatch system  
-* member5.py – Emergency alerts and traffic simulation  
-
-FUTURE WORK:
-
-* Integrate real accelerometer sensors for actual accident detection  
-* Use live GPS for real-time tracking  
-* Connect to hospital APIs for automatic notifications  
-* Implement real-time traffic control via IoT devices  
-* Extend system to mobile emergency apps for on-the-go monitoring
+- Traffic Signal Preemption: Implement "Green Corridor" logic to automatically clear traffic signals along the ambulance's GPS route.
+- Live Sensor Integration: Connect the physical MPU6050 Accelerometer and Neo-6M GPS hardware modules.
