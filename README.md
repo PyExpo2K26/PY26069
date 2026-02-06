@@ -6,6 +6,8 @@ Project Overview
 
 The main goal of G-Trace is to remove human delays in reporting road accidents. By automating detection and dispatch, the system ensures that medical help reaches the victim during the critical "Golden Hour."
 
+hello
+
 The Three-Stage Logical Flow
 
 Detection (The Sensor Layer): The system continuously monitors vehicle dynamics using a simulated tri-axial accelerometer.
