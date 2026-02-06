@@ -20,6 +20,6 @@ def render_alerts(accident):
     else:
         st.success("✅ No emergency alerts")
 
-render_alerts(accident_detected)
+render_alerts(accident_detected)       
 
 
