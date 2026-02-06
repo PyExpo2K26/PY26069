@@ -1,19 +1,14 @@
 import streamlit as st
 
 def setup_page():
-    st.set_page_config(
-        page_title="G-Trace Emergency System",
-        page_icon="🚨",
-        layout="wide"
-    )
+    # Only called by main.py
+    pass
 
 def render_header(accident):
-    st.title("🚨 G-Trace Smart Rescue System")
     if accident:
-        st.error("Emergency Protocol Activated")
+        st.markdown("<h1 style='color:red;'>🚨 G-TRACE: EMERGENCY DISPATCH ACTIVE</h1>", unsafe_allow_html=True)
     else:
-        st.success("System Monitoring Active")
+        st.markdown("<h1 style='color:green;'>📡 G-TRACE: SYSTEM MONITORING</h1>", unsafe_allow_html=True)  
 
-# run UI
 setup_page()
 render_header(False)
