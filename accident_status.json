@@ -1,0 +1,13 @@
+{
+  "accident_detected": false,
+  "g_force": 0.0,
+  "lat": null,
+  "lon": null,
+  "gps_valid": false,
+  "nearest_hospital": "None",
+  "nearest_hospital_lat": null,
+  "nearest_hospital_lon": null,
+  "distance_km": 0.0,
+  "all_hospitals": [],
+  "timestamp": null
+}
