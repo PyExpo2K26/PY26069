@@ -162,7 +162,7 @@ def receive_data():
 
         print(f"📡 Received → G={g_force:.2f} | GPS={'✅' if gps_valid else '⚠ estimated'} ({p_lat:.5f}, {p_lon:.5f})")
 
-        if g_force > 10.0:
+        if g_force > 1.5:
             state["accident_detected"] = True
             state["timestamp"]         = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             state["call_made"]         = False
@@ -261,5 +261,3 @@ if __name__ == "__main__":
     print(f"   Data file  → {os.path.abspath(DATA_FILE)}")
     print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
     app.run(host="0.0.0.0", port=5000, debug=True)
-
-
