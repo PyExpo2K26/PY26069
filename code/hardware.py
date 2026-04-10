@@ -13,14 +13,16 @@ TinyGPSPlus gps;
 HardwareSerial gpsSerial(1);
 
 // ===== WIFI =====
-const char* ssid = "ESP";
-const char* password = "nihil1017";
+const char* ssid = "iniya";
+const char* password = "iniya123";
 
 // ===== SERVER =====
-const char* serverUrl = "http://10.121.234.29:5000/data";
+const char* backendHost = "10.121.96.135";
+const int backendPort = 5000;
+String serverUrl;
 
 // ===== ACCIDENT SETTINGS =====
-float gForceThreshold = 1.0;     // accident threshold
+float gForceThreshold = 0.5;     // accident threshold
 int accidentConfirmCount = 0;
 const int requiredConfirmations = 1;
 
@@ -64,6 +66,19 @@ void setup()
   Serial.println("WiFi Connected");
   Serial.print("ESP32 IP: ");
   Serial.println(WiFi.localIP());
+  Serial.print("Connected to SSID: ");
+  Serial.println(WiFi.SSID());
+  Serial.print("BSSID: ");
+  Serial.println(WiFi.BSSIDstr());
+
+  serverUrl = String("http://") + backendHost + ":" + backendPort + "/data";
+  Serial.print("Configured backend URL: ");
+  Serial.println(serverUrl);
+}
+
+bool ipSameSubnet(const IPAddress &a, const IPAddress &b)
+{
+  return a[0] == b[0] && a[1] == b[1] && a[2] == b[2];
 }
 
 // =========================
@@ -102,45 +117,116 @@ void sendAccidentData(float gForce,float lat,float lon,bool gpsValid,bool accide
     return;
   }
 
+  Serial.print("ESP32 IP: ");
+  Serial.println(WiFi.localIP());
+
+  Serial.print("Backend URL: ");
+  Serial.println(serverUrl);
+
+  // Quick connectivity check using raw WiFiClient
+  WiFiClient testClient;
+  if(!testClient.connect(backendHost, backendPort))
+  {
+    Serial.println("Network check failed: cannot connect to backend host on port 5000");
+    Serial.print("ESP32 local IP: ");
+    Serial.println(WiFi.localIP());
+    Serial.print("Backend host IP: ");
+    Serial.println(backendHost);
+    if(!ipSameSubnet(WiFi.localIP(), IPAddress(10, 121, 96, 135)))
+    {
+      Serial.println("⚠ Subnet mismatch: ESP32 and backend appear to be on different subnets.");
+      Serial.println("  - Ensure ESP32 and PC are on the same Wi-Fi network.");
+    }
+    Serial.println("Firewall may be blocking port 5000 on the PC.");
+    Serial.println("  - Allow port 5000 for Private networks in Windows Firewall.");
+    return;
+  }
+  testClient.stop();
+
   HTTPClient http;
 
-  http.begin(serverUrl);
+  bool started = http.begin(serverUrl);
+  if(!started)
+  {
+    Serial.println("HTTP begin failed - check server URL and network");
+    return;
+  }
 
   http.addHeader("Content-Type","application/json");
 
-  StaticJsonDocument<200> doc;
+  StaticJsonDocument<256> doc;
 
   doc["g_force"] = gForce;
   doc["lat"] = lat;
   doc["lon"] = lon;
   doc["gps_valid"] = gpsValid;
   doc["accident"] = accident;
+  doc["hardware_id"] = "ESP32-01";
 
   String json;
-
   serializeJson(doc,json);
 
-  Serial.println("Sending JSON:");
-  Serial.println(json);
+  const int maxRetries = 3;
+  int attempt = 0;
+  int httpResponseCode = -1;
 
-  int httpResponseCode = http.POST(json);
+  while(attempt < maxRetries)
+  {
+    attempt++;
+    Serial.print("Attempt ");
+    Serial.print(attempt);
+    Serial.println("... POSTing data");
+
+    httpResponseCode = http.POST(json);
+
+    if(httpResponseCode > 0)
+      break;
+
+    Serial.print("POST failed (code ");
+    Serial.print(httpResponseCode);
+    Serial.println(") - retrying in 1s");
+    delay(1000);
+  }
+
+  Serial.print("HTTP Response code: ");
+  Serial.println(httpResponseCode);
 
   if(httpResponseCode > 0)
   {
-    Serial.print("HTTP Response: ");
-    Serial.println(httpResponseCode);
-
     String response = http.getString();
+    Serial.print("Backend response: ");
     Serial.println(response);
+
+    if(httpResponseCode >= 200 && httpResponseCode < 300)
+    {
+      Serial.println("Data posted successfully");
+    }
+    else
+    {
+      Serial.println("Warning: backend returned non-2xx status");
+    }
   }
   else
   {
-    Serial.print("Error sending data: ");
+    Serial.print("Error sending data (HTTPClient final error): ");
     Serial.println(httpResponseCode);
+    Serial.print("WiFi status: ");
+    Serial.println(WiFi.status());
+    if(WiFi.status() != WL_CONNECTED)
+    {
+      Serial.println("WiFi was disconnected during request.");
+    }
+    else
+    {
+      Serial.println("Check backend reachability and that port 5000 is open");
+      Serial.print("Ping test from ESP to backend: ");
+      if(WiFi.status() != WL_CONNECTED) Serial.println("skipped");
+    }
   }
 
   http.end();
 }
+
 
 // =========================
 // MAIN LOOP
