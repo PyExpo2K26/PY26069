@@ -8,8 +8,8 @@ from twilio.rest import Client
 app = Flask(__name__)
 
 # ===== TWILIO CONFIG =====
-TWILIO_SID   = os.environ.get("TWILIO_SID",   "AC5825ad806cb9819b8ec4b6d7cc2e2913")
-TWILIO_TOKEN = os.environ.get("TWILIO_TOKEN", "b257ee9c6c686205b7842a03b45cb200")
+TWILIO_SID   = os.environ.get("TWILIO_SID",   "twilio sid")
+TWILIO_TOKEN = os.environ.get("TWILIO_TOKEN", "twilio token")
 TWILIO_FROM  = os.environ.get("TWILIO_FROM",  "+17543184157")
 CALL_TO      = os.environ.get("CALL_TO",      "+917010467865")   # India number with country code
 
