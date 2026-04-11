@@ -15,8 +15,8 @@ Think of it as having a silent co-pilot that never sleeps — one that springs i
 
 ## 🎬 Demo
 
-📽️ **[Watch the Demo Video](https://drive.google.com/file/d/1hiDPNkK7vUIAMd7pv7JGhw-qiDEHBweL/view?usp=sharing)
-
+- [Watch the Demo Video](https://drive.google.com/file/d/1hiDPNkK7vUIAMd7pv7JGhw-qiDEHBweL/view?usp=sharing)
+- [Deployed Site](https://gn5hddvxxqdhquyz5avfds.streamlit.app/)
 
 
 
